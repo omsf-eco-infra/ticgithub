@@ -22,6 +22,7 @@ class Task:
 
     @staticmethod
     def make_parser():
+        _logger.debug("building parser")
         import argparse
         parser = argparse.ArgumentParser()
         parser.add_argument('--dry', action="store_true", default=False)
@@ -30,8 +31,13 @@ class Task:
         parser.add_argument('--loglevel', type=str, default="INFO")
         return parser
 
+    @classmethod
+    def inject_config_parameters(cls, config, opts):
+        return config, opts
+
     @staticmethod
     def use_parser(parser, args=None):
+        _logger.debug("using parser")
         opts = parser.parse_args(args)
         logging.basicConfig(level=getattr(logging, opts.loglevel))
         with open(opts.config, 'r') as f:
@@ -43,11 +49,13 @@ class Task:
     def run_cli(cls):
         parser = cls.make_parser()
         config, opts = cls.use_parser(parser)
+        config, opts = cls.inject_config_parameters(config, opts)
         task = cls.from_config(config)
         task(opts.dry)
 
     @classmethod
     def from_config(cls, cfg_dict):
+        _logger.debug(f"Building {cls} from config")
         config = cfg_dict['config']
         inbox_cfg = config['inbox']
         boxtype = BOXTYPE_DISPATCH[inbox_cfg['type']]
@@ -76,6 +84,7 @@ class Task:
     def __call__(self, dry=False):
         # skip early if not in config or not active
         if not self.config or not self.config.get("active", True):
+            _logger.info(f"EXITING: Config for '{self.config}' not active")
             return
 
         # calling param takes precedence (testing), then

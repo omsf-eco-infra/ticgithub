@@ -54,6 +54,9 @@ class Bot:
     def create_issue(self, title, content):
         return Issue(self.repo.create_issue(title, content))
 
+    def get_issue(self, issue_num):
+        return Issue(self.repo.get_issue(issue_num))
+
     def make_comment(self, issue_num, content):
         issue = self.repo.get_issue(issue_num)
         issue.create_comment(content)
