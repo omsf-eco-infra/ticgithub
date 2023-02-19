@@ -37,6 +37,15 @@ class Issue:
         return Issue._get_frontmatter(body)['ticket_id']
 
     @property
+    def is_ticket_issue(self):
+        try:
+            self.unique_id
+        except NonTicketIssueError:
+            return False
+        else:
+            return True
+
+    @property
     def unique_id(self):
         try:
             return self._unique_id_from_body(self._issue.body)
@@ -56,6 +65,10 @@ class Issue:
     @property
     def title(self):
         return self._issue.title
+
+    @property
+    def assignees(self):
+        return (assignee.login for assignee in self._issue.assignees)
 
 
 class NoIssue(Issue):
@@ -80,3 +93,7 @@ class NoIssue(Issue):
     @property
     def title(self):
         return "<UNKNOWN TITLE>"
+
+    @property
+    def assignees(self):
+        return []
