@@ -1,6 +1,6 @@
 name: assignment-to-gmail
 on:
-  issue:
+  issues:
     types: [assigned]
 
 jobs:
