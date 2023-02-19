@@ -21,25 +21,30 @@ class Task:
         self.config = config
 
     @staticmethod
-    def parse_cli_args(args=None):
+    def make_parser():
         import argparse
         parser = argparse.ArgumentParser()
         parser.add_argument('--dry', action="store_true", default=False)
         parser.add_argument('-c', '--config', type=str,
                             default=".ticgithub.yml")
         parser.add_argument('--loglevel', type=str, default="INFO")
+        return parser
+
+    @staticmethod
+    def use_parser(parser, args=None):
         opts = parser.parse_args(args)
         logging.basicConfig(level=getattr(logging, opts.loglevel))
         with open(opts.config, 'r') as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
 
-        return config, opts.dry
+        return config, opts
 
     @classmethod
     def run_cli(cls):
-        config, dry = cls.parse_cli_args()
+        parser = cls.make_parser()
+        config, opts = cls.use_parser(parser)
         task = cls.from_config(config)
-        task(dry)
+        task(opts.dry)
 
     @classmethod
     def from_config(cls, cfg_dict):
