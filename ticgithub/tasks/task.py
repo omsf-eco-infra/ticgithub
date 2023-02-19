@@ -1,6 +1,8 @@
 import logging
 _logger = logging.getLogger("__name__")
 
+import yaml
+
 from ..inbox import Inbox
 from ..gmail import GMailInbox
 from ..bot import Bot
@@ -17,6 +19,27 @@ class Task:
         self.bot = bot
         self.team = team
         self.config = config
+
+    @staticmethod
+    def parse_cli_args(args=None):
+        import argparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--dry', action="store_true", default=False)
+        parser.add_argument('-c', '--config', type=str,
+                            default=".ticgithub.yml")
+        parser.add_argument('--loglevel', type=str, default="INFO")
+        opts = parser.parse_args(args)
+        logging.basicConfig(level=getattr(logging, opts.loglevel))
+        with open(opts.config, 'r') as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+
+        return config, opts.dry
+
+    @classmethod
+    def run_cli(cls):
+        config, dry = cls.parse_cli_args()
+        task = cls.from_config(config)
+        task(dry)
 
     @classmethod
     def from_config(cls, cfg_dict):
@@ -53,7 +76,8 @@ class Task:
         # calling param takes precedence (testing), then
         dry = dry or self.config.get('dry', False)
 
-        cfg_dict = {k: v for k, v in set(self.config) - {"active", "dry"}}
+        cfg_dict = {k: v for k, v in self.config.items()
+                    if k not in {"active", "dry"}}
         cfg = self._build_config()
         _logger.info(f"Running {self} with config {cfg}")
         self._run(cfg, dry)
