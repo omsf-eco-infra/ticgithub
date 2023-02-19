@@ -1,5 +1,9 @@
 import os
+import warnings
+
 import github
+
+from .issues import Issue, NonTicketIssueError
 
 __all__ = ["SMTP", "Bot"]
 
@@ -48,17 +52,32 @@ class Bot:
         return self._github.get_repo(self.reponame)
 
     def create_issue(self, title, content):
-        return self.repo.create_issue(title, content)
+        return Issue(self.repo.create_issue(title, content))
 
     def make_comment(self, issue_num, content):
         issue = self.repo.get_issue(issue_num)
         issue.create_comment(content)
 
     def get_unassigned_issues(self):
-        return self.repo.get_issues(state="open", assignee=None)
+        return (
+            Issue(iss)
+            for iss in self.repo.get_issues(state="open", assignee=None)
+        )
 
     def get_open_issues(self):
-        return self.repo.get_issues(state="open")
+        return (Issue(iss) for iss in self.repo.get_issues(state="open"))
 
     def get_all_issues(self):
-        return self.repo.get_issues(state="all")
+        return (Issue(iss) for iss in self.repo.get_issues(state="all"))
+
+    def get_all_email_ticket_issues(self, nonticket="warn"):
+        for iss in self.get_all_issues():
+            try:
+                iss.unique_id
+            except NonTicketIssueError as e:
+                if nonticket == "warn":
+                    warnings.warn(str(e))
+                elif nonticket == "error":
+                    raise
+            else:
+                yield iss
