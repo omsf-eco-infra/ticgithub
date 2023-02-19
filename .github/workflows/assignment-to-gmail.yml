@@ -14,6 +14,6 @@ jobs:
       - name: Run ticgithub script
         run: echo "python -m ticgithub.assignment_to_gmail $ISSUE_NUM"
         env: 
-          ISSUE_NUM: ${{ github.issue.number }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
       
 
