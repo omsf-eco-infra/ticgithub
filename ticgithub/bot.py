@@ -64,7 +64,8 @@ class Bot:
     def get_unassigned_issues(self):
         return (
             Issue(iss)
-            for iss in self.repo.get_issues(state="open", assignee=None)
+            for iss in self.repo.get_issues(state="open")
+            if not iss.assignees
         )
 
     def get_open_issues(self):

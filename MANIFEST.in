@@ -1,0 +1,2 @@
+include ticgithub/data/templates/*txt
+include ticgithub/data/workflows/*yml
