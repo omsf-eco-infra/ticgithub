@@ -55,6 +55,10 @@ class Issue:
             )
 
     @property
+    def date_created(self):
+        return self._issue.created_at
+
+    @property
     def number(self):
         return self._issue.number
 

@@ -1,0 +1,5 @@
+Hi all! I'm just letting you know that this email is now represented on GitHub at:
+
+$GITHUB_URL
+
+Task assignment on GitHub will update GMail labels.
