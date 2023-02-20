@@ -51,6 +51,13 @@ class GMailInbox(Inbox):
             store_args = f"{num} {direction}X-GM-LABELS {labels_arg}"
             imap.uid("STORE", store_args)
 
+    def get_email(self, unique_id):
+        msgs = self._get_emails(search_string=f"X-GM-MSGID {unique_id}")
+        if len(msgs) != 1:
+            raise RuntimeError("More than 1 message for unique ID "
+                               f"'{unique_id}'")
+        return msgs[0]
+
     def _add_labels(self, gm_msg_id, labels):
         return _toggle_labels(gm_msg_id, labels, "+")
 
@@ -58,4 +65,9 @@ class GMailInbox(Inbox):
         return _toggle_labels(gm_msg_id, labels, "-")
 
     def set_labels(self, gm_msg_id, labels):
-        ...  # get existing labels; get the set diffs; add and remove
+        msg = self.get_email(gm_msg_id)
+        to_remove = set(msg.labels) - set(labels)
+        to_add = set(labels) - set(msg.labels)
+
+        self._add_labels(to_add)
+        self._remove_labels(to_remove)
