@@ -61,7 +61,6 @@ class Message:
         return raw_data_manager.get_content(message)
 
 
-
 class Inbox:
     MESSAGE_CLASS = Message
     FETCH_STR = "RFC822"
@@ -104,19 +103,27 @@ class Inbox:
     def _create_message(self, fetched):
         return self.MESSAGE_CLASS(*fetched[1][0])
 
-    def get_emails(self, since=None):
+    def _get_emails(self, search_string="ALL"):
         with self.connection() as imap:
-            typ, data = imap.search(None, "ALL")
+            typ, data = imap.search(None, search_string)
             fetch_msgs = [
                 imap.fetch(num, self.FETCH_STR)
                 for num in self.progress(data[0].split())
             ]
 
         msgs = [self._create_message(m) for m in fetch_msgs]
+        return msgs
 
+    def get_emails(self, since=None):
+        return self._get_emails()
         # TODO: I believe there are IMAP instructions for this; change the
         # search param
         # if since:
         #     msgs = [m for m in msgs if m.date >= since]
 
         return msgs
+
+    def get_email(self, unique_id):
+        for email in self.get_emails():
+            if email.unique_id == unique_id:
+                return email
