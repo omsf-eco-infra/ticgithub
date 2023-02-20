@@ -59,6 +59,15 @@ class Issue:
         return self._issue.created_at
 
     @property
+    def date_last_assigned(self):
+        assigns = [
+            event for event in self._issue.get_timeline()
+            if event.event == "assigned"
+        ]
+        last_assignment = sorted(assigns, key=lambda x: x.created_at)[-1]
+        return last_assignment.created_at
+
+    @property
     def number(self):
         return self._issue.number
 
