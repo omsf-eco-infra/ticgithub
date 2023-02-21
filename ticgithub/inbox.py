@@ -115,13 +115,12 @@ class Inbox:
         return msgs
 
     def get_emails(self, since=None):
-        return self._get_emails()
-        # TODO: I believe there are IMAP instructions for this; change the
-        # search param
-        # if since:
-        #     msgs = [m for m in msgs if m.date >= since]
-
-        return msgs
+        if since is None:
+            search_string = "ALL"
+        else:
+            since_date = since.strftime("%d-%b-%Y")
+            search_string = f"(SINCE {since_date})"
+        return self._get_emails(search_string)
 
     def get_email(self, unique_id):
         for email in self.get_emails():
