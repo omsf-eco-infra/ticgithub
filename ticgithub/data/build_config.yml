@@ -1,0 +1,31 @@
+ticgithub:
+  install: python -m pip install ticgithub
+  suffix: ""
+  force-dry: false
+  install-path: ./.github/workflows/
+  #install: python -m pip install -e .
+  #suffix: dev
+  #force-dry: true
+  #install-path: ./.github/workflows/
+
+builders:
+  - config-name: emails-to-issues
+    run-command: python -m ticgithub.tasks.emails_to_issues
+    template: scheduled_workflow.yml
+    build-params:
+      cron: CRON
+  - config-name: assignment-to-gmail
+    run-command: python -m ticgithub.tasks.assignment_to_gmail
+    template: assignment-to-gmail.yml
+  - config-name: unassigned-reminder
+    run-command: python -m ticgithub.tasks.unassigned_reminder
+    template: scheduled_workflow.yml
+    build-params:
+      cron: CRON
+  - config-name: unclosed-reminder
+    run-command: python -m ticgithub.tasks.unclosed_reminder
+    template: scheduled_workflow.yml
+    build-params:
+      cron: CRON
+
+

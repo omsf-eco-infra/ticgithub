@@ -1,18 +1,19 @@
-name: assignment-to-gmail$SUFFIX
+name: $NAME$SUFFIX
 on:
   issues:
     types: [assigned, unassigned]
 
 jobs:
-  add-gmail-label:
+  $NAME:
     runs-on: ubuntu-latest
     name: Add GMail Label
     steps:
       - name: Install ticgithub
         run: $INSTALL_CMD
       - name: Run ticgithub script
-        run: python -m ticgithub.assignment_to_gmail $$ISSUE_NUM
+        run: $RUN_CMD $DRY $$ISSUE_NUM
         env: 
           ISSUE_NUM: $${{ github.event.issue.number }}
+          $PAT: $${{ secrets.$PAT }}
       
 

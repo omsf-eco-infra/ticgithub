@@ -1,0 +1,19 @@
+name: $NAME$SUFFIX
+on:
+  workflow_dispatch:
+  schedule:
+    cron: $CRON
+
+jobs:
+  $NAME:
+    runs-on: ubuntu-latest
+    name: $NAME
+    steps:
+      - name: Install ticgithub
+        run: $INSTALL_CMD
+      - name: Run ticgithub script for $NAME
+        run: $RUN_CMD $DRY
+        env:
+          $PAT: $${{ secrets.$PAT }}
+          $INBOX: $${{ secrets.$INBOX }}
+          $SENDMAIL: $${{ secrets.$SENDMAIL }}
