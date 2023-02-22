@@ -74,7 +74,7 @@ def build_workflow(ticgithub_dict, builder_dict, config, dry):
     if not dry:
         directory.mkdir(parents=True, exist_ok=True)
         with open(directory / filename, mode="w") as f:
-            f.write(template.substitutions)
+            f.write(contents)
 
 def build(build_config, config, dry):
     ticgithub_dict = build_config.get('ticgithub', {})
