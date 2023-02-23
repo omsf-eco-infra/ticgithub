@@ -7,9 +7,8 @@ class UnclosedReminder(ReminderTask):
     CONFIG = "unclosed-reminder"
 
     def _get_relevant_issues(self):
-        open_issues = self.bot.get_open_issues()
         for issue in self.bot.get_open_issues():
-            if issue.assignee:
+            if issue.assignees:
                 yield issue
 
     def _extract_date(self, issue, config):
