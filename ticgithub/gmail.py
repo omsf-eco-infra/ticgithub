@@ -69,5 +69,5 @@ class GMailInbox(Inbox):
         to_remove = set(msg.labels) - set(labels)
         to_add = set(labels) - set(msg.labels)
 
-        self._add_labels(to_add)
-        self._remove_labels(to_remove)
+        self._add_labels(gm_msg_id, to_add)
+        self._remove_labels(gm_msg_id, to_remove)

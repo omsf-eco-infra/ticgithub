@@ -51,7 +51,7 @@ class ReminderTask(Task):
             )
             _logger.info("COMMENT CONTENTS:\n" + comment)
             if not dry:
-                self.bot.create_comment(issue.number, comment)
+                self.bot.make_comment(issue.number, comment)
 
     def get_relevant_issues(self):
         issues = self._get_relevant_issues()
