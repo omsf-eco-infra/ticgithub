@@ -85,7 +85,7 @@ class EmailsToIssues(Task):
         _logger.info(f"CREATING ISSUE\ntitle: {msg.subject}:\n{contents}")
 
         if not dry:
-            issue = self.bot.create_issue(title, contents)
+            issue = self.bot.create_issue(msg.subject, contents)
             _logger.info("CREATED ISSUE {issue.number}")
         else:
             # used in dry run only
