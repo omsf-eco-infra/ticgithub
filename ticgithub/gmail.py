@@ -59,10 +59,10 @@ class GMailInbox(Inbox):
         return msgs[0]
 
     def _add_labels(self, gm_msg_id, labels):
-        return _toggle_labels(gm_msg_id, labels, "+")
+        return self._toggle_labels(gm_msg_id, labels, "+")
 
     def _remove_labels(self, gm_msg_id, labels):
-        return _toggle_labels(gm_msg_id, labels, "-")
+        return self._toggle_labels(gm_msg_id, labels, "-")
 
     def set_labels(self, gm_msg_id, labels):
         msg = self.get_email(gm_msg_id)

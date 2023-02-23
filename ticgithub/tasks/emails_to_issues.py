@@ -2,6 +2,7 @@ import itertools
 import string
 from datetime import timedelta, datetime
 from email.mime.text import MIMEText
+import smtplib
 
 
 import logging
