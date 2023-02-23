@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 from ..issues import Issue, NoIssue
 from .task import Task
+from ..utils.datafiles import text_template
 
 
 # FILTERS
@@ -33,12 +34,11 @@ def message_from_team_not_to(inbox, bot, team, config):
 
 
 def _reply_template(config):
-    if template_filename := config.get('template'):
-        with open(template_filename) as f:
-            template_str = f.read()
-        reply_template = string.Template(template_str)
-    else:
-        reply_template = DEFAULT_REPLY_TEMPLATE
+    default_filename = text_template("email_reply.txt")
+    template_filename = config.get('template', default_filename)
+    with open(template_filename) as f:
+        template_str = f.read()
+    reply_template = string.Template(template_str)
 
     return reply_template
 
