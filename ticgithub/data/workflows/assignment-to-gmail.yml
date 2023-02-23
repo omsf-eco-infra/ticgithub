@@ -16,5 +16,4 @@ jobs:
         env: 
           ISSUE_NUM: $${{ github.event.issue.number }}
           $PAT: $${{ secrets.$PAT }}
-      
-
+          $INBOX: $${{ secrets.$INBOX }}
