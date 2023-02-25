@@ -2,8 +2,6 @@ import itertools
 import string
 from datetime import timedelta, datetime
 from email.mime.text import MIMEText
-import smtplib
-
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -33,6 +31,14 @@ def message_from_team_not_to(inbox, bot, team, config):
 
     return team_filter_inner
 
+def message_from_specified(inbox, bot, team, config):
+    def message_from_specified_inner(msg):
+        for email in config['senders']:
+            if sender in msg.get("From"):
+                return True
+
+    return message_from_specified_inner
+
 
 def _reply_template(config):
     default_filename = text_template("email_reply.txt")
@@ -51,6 +57,7 @@ class EmailsToIssues(Task):
     FILTERS = {
         'bot': message_from_bot,
         'team': message_from_team_not_to,
+        'omit-senders': message_from_specified,
     }
 
     def _build_filters(self, filt_config):
