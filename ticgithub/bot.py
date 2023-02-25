@@ -1,5 +1,6 @@
 import os
 import warnings
+import smtplib
 
 import github
 
