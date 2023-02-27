@@ -33,7 +33,7 @@ def message_from_team_not_to(inbox, bot, team, config):
 
 def message_from_specified(inbox, bot, team, config):
     def message_from_specified_inner(msg):
-        for email in config['senders']:
+        for sender in config['senders']:
             if sender in msg.get("From"):
                 return True
 
