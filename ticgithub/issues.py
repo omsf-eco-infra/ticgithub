@@ -81,7 +81,7 @@ class Issue:
 
     @property
     def assignees(self):
-        return (assignee.login for assignee in self._issue.assignees)
+        return [assignee.login for assignee in self._issue.assignees]
 
 
 class NoIssue(Issue):
