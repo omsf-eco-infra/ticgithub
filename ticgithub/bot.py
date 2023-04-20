@@ -17,7 +17,7 @@ class SMTP:
 
     def sendmail(self, email, recipients):
         with smtplib.SMTP_SSL(self.host, self.port) as smtp:
-            smtp.login(user, os.environ.get(self.secret))
+            smtp.login(self.user, os.environ.get(self.secret))
             smtp.sendmail(self.user, recipients, email.as_string())
 
     def __repr__(self):
