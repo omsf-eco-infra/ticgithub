@@ -17,25 +17,45 @@ from ..utils.datafiles import text_template
 # The filter returns a Callable[[Message], bool]. This callable should return True if
 # the Message should be excluded from the messages to turn into issues.
 
+def _log_emails(emails):
+    for email in emails:
+        _logger.debug(f"Subject: {email.subject}")
+        _logger.debug(f"From: {email.get('From')}")
+        yield email
+
 def message_from_bot(inbox, bot, team, config):
     def bot_filter_inner(msg):
-        return bot.smtp and bot.smtp.user in msg.get("From")
+        _logger.debug("Checking message for bot senders")
+        if bot.smtp and bot.smtp.user in msg.get("From"):
+            _logger.debug("Filtered bot sender")
+            return True
+        else:
+            return False
 
     return bot_filter_inner
 
 def message_from_team_not_to(inbox, bot, team, config):
     def team_filter_inner(msg):
+        _logger.debug("Checking message for team senders")
         is_team = any(mem.email in msg.get("From") for mem in team)
         is_to = inbox.user in msg.get("To")
-        return is_team and not is_to
+        if is_team and not is_to:
+            _logger.debug("Filtered team sender")
+            return True
+        else:
+            return False
 
     return team_filter_inner
 
 def message_from_specified(inbox, bot, team, config):
     def message_from_specified_inner(msg):
+        _logger.debug("Checking message for specified senders")
         for sender in config['senders']:
             if sender in msg.get("From"):
+                _logger.debug("Filtered specified sender")
                 return True
+            else:
+                return False
 
     return message_from_specified_inner
 
@@ -94,7 +114,7 @@ class EmailsToIssues(Task):
 
         if not dry:
             issue = self.bot.create_issue(msg.subject, contents)
-            _logger.info("CREATED ISSUE {issue.number}")
+            _logger.info(f"CREATED ISSUE {issue.number}")
         else:
             # used in dry run only
             issue = NoIssue()
@@ -125,16 +145,20 @@ class EmailsToIssues(Task):
         _logger.debug(f"CONFIG: {config}")
         since = datetime.now() - config['recent']
         emails = self.inbox.get_emails(since=since)
-        filtered = itertools.dropwhile(
+        filtered = itertools.filterfalse(
             lambda x: any(f(x) for f in config['filters']),
-            emails
+            _log_emails(emails)
         )
+
 
         issues = self.bot.get_all_email_ticket_issues()
         id_to_message = {msg.unique_id: msg for msg in filtered}
         id_to_issue = {iss.unique_id: iss for iss in issues}
 
         ids_to_add = set(id_to_message) - set(id_to_issue)
+        _logger.info(f"Downloaded {len(emails)} emails")
+        _logger.info(f"Kept {len(id_to_message)} after filtering")
+        _logger.info(f"Adding {len(ids_to_add)} new messages")
         for id_ in ids_to_add:
             msg = id_to_message[id_]
             issue = self.single_email_to_issue(msg, dry)
