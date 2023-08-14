@@ -28,6 +28,8 @@ class Issue:
     def _get_frontmatter(body):
         for frontmatter in yaml.load_all(body, Loader=yaml.FullLoader):
             break
+        if not isinstance(frontmatter, dict):
+            frontmatter = {}
         if 'Date' in frontmatter:
             frontmatter['Date'] = datetime.fromisoformat(frontmatter['Date'])
         return frontmatter
