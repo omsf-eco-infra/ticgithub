@@ -3,7 +3,7 @@
 *Tools to use a GitHub repository as a support ticket system.*
 
 We had a shared inbox that didn't get a lot of traffic (not enough to justify
-spending \$<!-- -->\$\$<!-- -->\$ on email ticketing solutions), but it was
+spending \$&#8203;\$&#8203;\$&#8203;\$ on email ticketing solutions), but it was
 essential that all emails that came in there get a timely response.
 
 Essentially, our needs were:
