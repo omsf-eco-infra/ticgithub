@@ -85,6 +85,24 @@ class Issue:
     def assignees(self):
         return [assignee.login for assignee in self._issue.assignees]
 
+    @property
+    def labels(self):
+        return set(l.name for l in self._issue.labels)
+
+    def label_added(self, label):
+        if not label in self.labels:
+            return None
+
+        label_adds = [
+            event for event in self._issue.get_timeline()
+            if (
+                event.event == "labeled"
+                and event.raw_data['label']['name'] == label
+            )
+        ]
+        last_added = sorted(label_adds, key=lambda x: x.created_at)[-1]
+        return last_added.created_at
+
 
 class NoIssue(Issue):
     """
@@ -111,4 +129,8 @@ class NoIssue(Issue):
 
     @property
     def assignees(self):
+        return []
+
+    @property
+    def labels(self):
         return []
