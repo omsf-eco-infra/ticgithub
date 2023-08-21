@@ -51,9 +51,8 @@ class ReminderTask(Task):
         # snooze time is about any snoozes that have been applied
         delay_time = self._extract_date(issue, config) + config['delay']
         # snooze_time set to date_created if no snoozes hav been applied;
-        # this will be earlier than any other time (including now!)
-        snooze_time = (self._get_snooze_time(issue, config)
-                       or issue.date_created)
+        # this will be earlier than any other time (including `now`)
+        snooze_time = self._get_snooze_time(issue, config)
 
         trigger_time = max([delay_time, snooze_time])
         if now > trigger_time:
@@ -80,7 +79,10 @@ class ReminderTask(Task):
             issue.label_added(label) + snoozes[label]
             for label in snooze_labels
         ]
-        return max(end_snooze)
+        if end_snooze:
+            return max(end_snooze)
+        else:
+            return issue.date_created
 
     def _run(self, config, dry):
         now = datetime.now()
