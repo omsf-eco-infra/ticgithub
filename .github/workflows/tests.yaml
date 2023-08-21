@@ -33,7 +33,7 @@ jobs:
       - name: Install
         run: python -m pip install -e .
       - name: Install testing
-        run: python -m pip install pytest
+        run: python -m pip install pytest pytest-cov
       - name: Versions
         run: python -m pip list
       - name: Run tests
