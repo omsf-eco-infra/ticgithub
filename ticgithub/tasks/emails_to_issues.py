@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 from ..issues import Issue, NoIssue
 from .task import Task
 from ..utils.datafiles import text_template
+from ..emailcleaners import clean_content
 
 
 # FILTERS
@@ -111,6 +112,8 @@ class EmailsToIssues(Task):
         # create the issue
         contents = Issue.issue_body_from_message(msg)
         _logger.info(f"CREATING ISSUE\ntitle: {msg.subject}:\n{contents}")
+
+        contents = clean_content(contents)
 
         if not dry:
             issue = self.bot.create_issue(msg.subject, contents)
