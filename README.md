@@ -44,7 +44,7 @@ to enable IMAP in your account. In detail:
    authentication](https://support.google.com/accounts/answer/185839) for that
    Google account.
 3. [Add an app password](https://support.google.com/accounts/answer/185833).
-   Use a custom name; the value of the name does name matter (e.g, you can use
+   Use a custom name; the value of the name does not matter (e.g, you can use
    "ticgithub" or "Support Repository" or anything else you want). Record that
    password; you will need to add it as a GitHub secret later.
 4. Create labels in your account to represent assignment. I recommend nested
