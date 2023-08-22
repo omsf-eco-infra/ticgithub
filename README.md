@@ -3,7 +3,7 @@
 *Tools to use a GitHub repository as a support ticket system.*
 
 We had a shared inbox that didn't get a lot of traffic (not enough to justify
-spending \$<!-- -->\$\$<!-- -->\$ on email ticketing solutions), but it was
+spending \$&#8203;\$&#8203;\$&#8203;\$ on email ticketing solutions), but it was
 essential that all emails that came in there get a timely response.
 
 Essentially, our needs were:
@@ -44,7 +44,7 @@ to enable IMAP in your account. In detail:
    authentication](https://support.google.com/accounts/answer/185839) for that
    Google account.
 3. [Add an app password](https://support.google.com/accounts/answer/185833).
-   Use a custom name; the value of the name does name matter (e.g, you can use
+   Use a custom name; the value of the name does not matter (e.g, you can use
    "ticgithub" or "Support Repository" or anything else you want). Record that
    password; you will need to add it as a GitHub secret later.
 4. Create labels in your account to represent assignment. I recommend nested
