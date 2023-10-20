@@ -5,10 +5,13 @@ import smtplib
 import github
 
 from .issues import Issue, NonTicketIssueError
+from .authorizable import Authorizable
 
 __all__ = ["SMTP", "Bot"]
 
-class SMTP:
+class SMTP(Authorizable):
+    _AUTHORIZATION_ERROR_CLS = smtplib.SMTPException
+
     def __init__(self, user, host, secret, port=465):
         self.user = user
         self.host = host
@@ -20,12 +23,17 @@ class SMTP:
             smtp.login(self.user, os.environ.get(self.secret))
             smtp.sendmail(self.user, recipients, email.as_string())
 
+    def _check_authorization(self):
+        with smtplib.SMTP_SSL(self.host, self.port) as smtp:
+            smtp.login(self.user, os.environ.get(self.secret))
+        return True
+
     def __repr__(self):
         return (f"{self.__class__.__name__}('{self.user}:"
                 f"{self.port}")
 
 
-class Bot:
+class Bot(Authorizable):
     def __init__(self, token_secret, repo, smtp=None):
         self.token_secret = token_secret
         self.reponame = repo
@@ -45,6 +53,10 @@ class Bot:
         return cls(token_secret=config['token_name'],
                    repo=config['repo'],
                    smtp=smtp)
+
+    def _check_authorization(self):
+        self.repo  # this should raise any errors
+        return True
 
     @property
     def repo(self):
