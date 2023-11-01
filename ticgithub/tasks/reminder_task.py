@@ -1,5 +1,5 @@
 import string
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import yaml
 
@@ -85,6 +85,9 @@ class ReminderTask(Task):
             return issue.date_created
 
     def _run(self, config, dry):
-        now = datetime.now()
+        # force now to be tz-unaware, but in UTC (appears to be what
+        # PyGithub returns)
+        now = datetime.now(tz=timezone.utc)
+        now = now.replace(tzinfo=None)
         for issue in self.get_relevant_issues():
             self._single_issue_check(issue, config, now, dry)
