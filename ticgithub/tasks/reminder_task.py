@@ -92,6 +92,5 @@ class ReminderTask(Task):
         # force now to be tz-unaware, but in UTC (appears to be what
         # PyGithub returns)
         now = datetime.now(tz=timezone.utc)
-        now = now.replace(tzinfo=None)
         for issue in self.get_relevant_issues():
             self._single_issue_check(issue, config, now, dry)
