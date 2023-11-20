@@ -1,5 +1,5 @@
 import string
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import yaml
 
@@ -55,6 +55,10 @@ class ReminderTask(Task):
         snooze_time = self._get_snooze_time(issue, config)
 
         trigger_time = max([delay_time, snooze_time])
+        _logger.debug(f"{delay_time=}")
+        _logger.debug(f"{snooze_time=}")
+        _logger.debug(f"{trigger_time=}")
+        _logger.debug(f"{now=}")
         if now > trigger_time:
             _logger.info(f"CREATING COMMENT FOR ISSUE {issue.number}")
             comment = self.craft_reminder_comment(
@@ -85,6 +89,8 @@ class ReminderTask(Task):
             return issue.date_created
 
     def _run(self, config, dry):
-        now = datetime.now()
+        # force now to be tz-unaware, but in UTC (appears to be what
+        # PyGithub returns)
+        now = datetime.now(tz=timezone.utc)
         for issue in self.get_relevant_issues():
             self._single_issue_check(issue, config, now, dry)
