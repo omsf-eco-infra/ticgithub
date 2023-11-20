@@ -55,6 +55,10 @@ class ReminderTask(Task):
         snooze_time = self._get_snooze_time(issue, config)
 
         trigger_time = max([delay_time, snooze_time])
+        _logger.info(f"{delay_time=}")
+        _logger.info(f"{snooze_time=}")
+        _logger.info(f"{trigger_time=}")
+        _logger.info(f"{now=}")
         if now > trigger_time:
             _logger.info(f"CREATING COMMENT FOR ISSUE {issue.number}")
             comment = self.craft_reminder_comment(
