@@ -8,6 +8,8 @@ from email.utils import parsedate_to_datetime
 from email.header import decode_header
 from email.contentmanager import raw_data_manager
 
+from .authorizable import Authorizable
+
 __all__ = ["Message", "Inbox"]
 
 class Message:
@@ -61,10 +63,12 @@ class Message:
         return raw_data_manager.get_content(message)
 
 
-class Inbox:
+class Inbox(Authorizable):
     MESSAGE_CLASS = Message
     FETCH_STR = "RFC822"
     TYPE = "imap"
+
+    _AUTHORIZATION_ERROR_CLS = imaplib.IMAP4.error
 
     def __init__(
         self,
@@ -89,6 +93,12 @@ class Inbox:
     def from_config(cls, config):
         kwargs = {k: v for k, v in config.items() if k != "type"}
         return cls(**kwargs)
+
+    def _check_authorization(self):
+        with self.connection:
+            # any errors should be raised by that
+            pass
+        return True
 
     @contextlib.contextmanager
     def connection(self):

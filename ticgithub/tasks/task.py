@@ -1,5 +1,5 @@
 import logging
-_logger = logging.getLogger("__name__")
+_logger = logging.getLogger(__name__)
 
 import yaml
 
@@ -51,7 +51,9 @@ class Task:
         config, opts = cls.use_parser(parser)
         config, opts = cls.inject_config_parameters(config, opts)
         task = cls.from_config(config)
-        task(opts.dry)
+        result = task(opts.dry)
+        if result:
+            exit(result)
 
     @classmethod
     def from_config(cls, cfg_dict):
@@ -94,4 +96,4 @@ class Task:
                     if k not in {"active", "dry"}}
         cfg = self._build_config()
         _logger.info(f"Running {self} with config {cfg}")
-        self._run(cfg, dry)
+        return self._run(cfg, dry)
