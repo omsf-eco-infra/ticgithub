@@ -26,6 +26,7 @@ class Issue:
 
     @staticmethod
     def _get_frontmatter(body):
+        if 
         for frontmatter in yaml.load_all(body, Loader=yaml.FullLoader):
             break
         if not isinstance(frontmatter, dict):
@@ -36,6 +37,10 @@ class Issue:
 
     @staticmethod
     def _unique_id_from_body(body):
+        if not body:
+            # anything falsey is not possible; we've seen a None here before
+            # (possibly deleted issues?)
+            raise NonTicketIssueError(f"Issue {self.number} has no body.")
         return Issue._get_frontmatter(body)['ticket_id']
 
     @property
