@@ -26,7 +26,6 @@ class Issue:
 
     @staticmethod
     def _get_frontmatter(body):
-        if 
         for frontmatter in yaml.load_all(body, Loader=yaml.FullLoader):
             break
         if not isinstance(frontmatter, dict):
