@@ -8,6 +8,8 @@ jobs:
   $NAME:
     runs-on: ubuntu-latest
     name: $NAME
+    permissions:
+      issues: write
     steps:
       - uses: actions/checkout@v3
       - name: Install ticgithub
@@ -15,6 +17,6 @@ jobs:
       - name: Run ticgithub script for $NAME
         run: $RUN_CMD --loglevel INFO $DRY
         env:
-          $PAT: $${{ secrets.$PAT }}
+          $PAT: $${{ secrets.GITHUB_TOKEN }}
           $INBOX: $${{ secrets.$INBOX }}
           $SENDMAIL: $${{ secrets.$SENDMAIL }}
