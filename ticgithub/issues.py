@@ -34,8 +34,11 @@ class Issue:
             frontmatter['Date'] = datetime.fromisoformat(frontmatter['Date'])
         return frontmatter
 
-    @staticmethod
-    def _unique_id_from_body(body):
+    def _unique_id_from_body(self, body):
+        if not body:
+            # anything falsey is not possible; we've seen a None here before
+            # (possibly deleted issues?)
+            raise NonTicketIssueError(f"Issue {self.number} has no body.")
         return Issue._get_frontmatter(body)['ticket_id']
 
     @property
