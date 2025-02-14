@@ -34,8 +34,7 @@ class Issue:
             frontmatter['Date'] = datetime.fromisoformat(frontmatter['Date'])
         return frontmatter
 
-    @staticmethod
-    def _unique_id_from_body(body):
+    def _unique_id_from_body(self, body):
         if not body:
             # anything falsey is not possible; we've seen a None here before
             # (possibly deleted issues?)
